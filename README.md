@@ -16,8 +16,8 @@ This project explores diabetes risk factors using the CDC BRFSS 2015 Diabetes He
 
 ## Dataset
 
-Diabetes Health Indicators Dataset  
-Source: Kaggle / CDC BRFSS 2015
+Diabetes Health Indicators Dataset (BRFSS 2015)  
+Source: [Kaggle Dataset](https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset)
 
 ## Tech Stack
 
