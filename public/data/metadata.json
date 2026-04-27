@@ -1,0 +1,64 @@
+{
+  "totalRows": 253680,
+  "features": [
+    "HighBP",
+    "HighChol",
+    "BMI",
+    "Smoker",
+    "Stroke",
+    "HeartDiseaseorAttack",
+    "PhysActivity",
+    "Fruits",
+    "Veggies",
+    "HvyAlcoholConsump",
+    "AnyHealthcare",
+    "NoDocbcCost",
+    "GenHlth",
+    "MentHlth",
+    "PhysHlth",
+    "DiffWalk",
+    "Sex",
+    "Age",
+    "Education",
+    "Income"
+  ],
+  "groupVariables": [
+    "PhysActivity",
+    "Smoker",
+    "HighBP",
+    "HighChol",
+    "Sex",
+    "DiffWalk",
+    "HeartDiseaseorAttack"
+  ],
+  "incomeLabels": {
+    "1": "Less than $10k",
+    "2": "$10k-$15k",
+    "3": "$15k-$20k",
+    "4": "$20k-$25k",
+    "5": "$25k-$35k",
+    "6": "$35k-$50k",
+    "7": "$50k-$75k",
+    "8": "$75k or more"
+  },
+  "ageLabels": {
+    "1": "18-24",
+    "2": "25-29",
+    "3": "30-34",
+    "4": "35-39",
+    "5": "40-44",
+    "6": "45-49",
+    "7": "50-54",
+    "8": "55-59",
+    "9": "60-64",
+    "10": "65-69",
+    "11": "70-74",
+    "12": "75-79",
+    "13": "80+"
+  },
+  "diabetesLabels": {
+    "0": "No Diabetes",
+    "1": "Prediabetes",
+    "2": "Diabetes"
+  }
+}
