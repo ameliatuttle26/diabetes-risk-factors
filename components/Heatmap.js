@@ -17,6 +17,8 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
+    d3.select("body").selectAll(".heatmap-tooltip").remove();
+
     const variables = [...new Set(data.map((d) => d.x))];
 
     const width = 850;
@@ -38,9 +40,9 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .padding(0.03);
 
     const color = d3
-      .scaleDiverging()
-      .domain([-1, 0, 1])
-      .interpolator(d3.interpolateRdBu);
+      .scaleSequential()
+      .domain([0, 1])
+      .interpolator(d3.interpolateYlOrRd);
 
     svg
       .append("text")
@@ -56,8 +58,23 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .attr("y", 50)
       .attr("font-size", 12)
       .attr("fill", "#666")
-      .text("Darker red/blue indicates stronger positive or negative correlation.");
+      .text("Darker cells indicate stronger correlation.");
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("class", "heatmap-tooltip")
+      .style("position", "absolute")
+      .style("background", "white")
+      .style("padding", "6px 10px")
+      .style("border", "1px solid #ccc")
+      .style("border-radius", "6px")
+      .style("font-size", "12px")
+      .style("pointer-events", "none")
+      .style("box-shadow", "0 2px 8px rgba(0,0,0,0.15)")
+      .style("opacity", 0);
+
+    // Base heatmap cells. These never change on hover.
     svg
       .selectAll(".cell")
       .data(data)
@@ -67,16 +84,67 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .attr("y", (d) => y(d.y))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .attr("fill", (d) => color(d.value))
-      .attr("stroke", (d) =>
-        d.x === selectedVariable || d.y === selectedVariable ? "#111" : "white"
-      )
-      .attr("stroke-width", (d) =>
-        d.x === selectedVariable || d.y === selectedVariable ? 1.5 : 0.5
-      )
+      .attr("fill", (d) => color(Math.abs(d.value)))
+      .attr("stroke", "#bbb")
+      .attr("stroke-width", 1);
+
+    // Floating overlay rectangle. This is the only rectangle that changes on hover.
+    const hoverRect = svg
+      .append("rect")
+      .attr("class", "hover-rect")
+      .attr("width", x.bandwidth() + 6)
+      .attr("height", y.bandwidth() + 6)
+      .attr("fill", "none")
+      .attr("stroke", "#111")
+      .attr("stroke-width", 3)
+      .attr("rx", 3)
+      .style("pointer-events", "none")
+      .style("opacity", 0);
+
+    // Invisible hover layer.
+    svg
+      .selectAll(".hover-target")
+      .data(data)
+      .join("rect")
+      .attr("class", "hover-target")
+      .attr("x", (d) => x(d.x))
+      .attr("y", (d) => y(d.y))
+      .attr("width", x.bandwidth())
+      .attr("height", y.bandwidth())
+      .attr("fill", "transparent")
       .attr("cursor", "pointer")
-      .on("click", (event, d) => {
-        if (onSelectVariable) onSelectVariable(d.x);
+      .on("mouseover", function (event, d) {
+        hoverRect
+          .attr("x", x(d.x) - 3)
+          .attr("y", y(d.y) - 3)
+          .style("opacity", 1);
+
+        tooltip
+          .style("opacity", 1)
+          .html(`
+            <strong>${d.x}</strong> vs <strong>${d.y}</strong><br/>
+            Correlation: ${d.value.toFixed(3)}
+          `)
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 20 + "px");
+      })
+      .on("mousemove", function (event, d) {
+        hoverRect
+          .attr("x", x(d.x) - 3)
+          .attr("y", y(d.y) - 3);
+
+        tooltip
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 20 + "px");
+      })
+      .on("mouseout", function () {
+        hoverRect.style("opacity", 0);
+        tooltip.style("opacity", 0);
+      })
+      .on("click", function (event, d) {
+        if (onSelectVariable) {
+          onSelectVariable(d.x);
+        }
       });
 
     svg
@@ -94,7 +162,7 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
         return `rotate(-55, ${xPos}, ${yPos})`;
       })
       .attr("font-size", 10)
-      .attr("font-weight", (d) => d === selectedVariable ? "bold" : "normal")
+      .attr("font-weight", (d) => (d === selectedVariable ? "bold" : "normal"))
       .text((d) => d);
 
     svg
@@ -108,7 +176,7 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .attr("text-anchor", "end")
       .attr("dominant-baseline", "middle")
       .attr("font-size", 10)
-      .attr("font-weight", (d) => d === selectedVariable ? "bold" : "normal")
+      .attr("font-weight", (d) => (d === selectedVariable ? "bold" : "normal"))
       .text((d) => d);
   }, [data, selectedVariable, onSelectVariable]);
 
