@@ -152,6 +152,27 @@ with open(OUTPUT_DIR / "correlations.json", "w") as f:
     json.dump(correlations, f, indent=2)
 
 
+
+# 1B. Correlation Matrix JSON
+
+corr_matrix = df_clean[feature_columns + ["Diabetes_012"]].corr()
+
+matrix_data = []
+
+matrix_variables = feature_columns + ["Diabetes_012"]
+
+for y_var in matrix_variables:
+    for x_var in matrix_variables:
+        value = corr_matrix.loc[y_var, x_var]
+        matrix_data.append({
+            "x": x_var,
+            "y": y_var,
+            "value": round(float(value), 4)
+        })
+
+with open(OUTPUT_DIR / "correlation_matrix.json", "w") as f:
+    json.dump(matrix_data, f, indent=2)
+
 # 2. Prevalence JSON
 # Diabetes prevalence by income + group variable
 

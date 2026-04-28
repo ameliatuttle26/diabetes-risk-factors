@@ -1,8 +1,10 @@
 import { useState } from "react";
 import GroupedBarChart from "../components/GroupedBarChart";
+import Heatmap from "../components/Heatmap";
 
 export default function Home() {
   const [groupBy, setGroupBy] = useState("PhysActivity");
+  const [selectedVariable, setSelectedVariable] = useState(null);
 
   return (
     <main className="container">
@@ -16,7 +18,10 @@ export default function Home() {
       <section className="grid">
         <div className="card">
           <h2>Correlation Heatmap</h2>
-          <div className="placeholder heatmap">Heatmap will go here</div>
+          <Heatmap
+            selectedVariable={selectedVariable}
+            onSelectVariable={setSelectedVariable}
+          />
         </div>
 
         <div className="card">
