@@ -1,4 +1,9 @@
+import { useState } from "react";
+import GroupedBarChart from "../components/GroupedBarChart";
+
 export default function Home() {
+  const [groupBy, setGroupBy] = useState("PhysActivity");
+
   return (
     <main className="container">
       <section className="hero">
@@ -6,22 +11,6 @@ export default function Home() {
         <p>
           Explore how health, lifestyle, and socioeconomic factors relate to diabetes risk.
         </p>
-      </section>
-
-      <section className="controls">
-        <div className="control">
-          <label>Group by:</label>
-          <select>
-            <option>Physical Activity</option>
-            <option>Smoking</option>
-            <option>High Blood Pressure</option>
-          </select>
-        </div>
-
-        <div className="control">
-          <label>Age Filter:</label>
-          <input type="range" min="1" max="13" />
-        </div>
       </section>
 
       <section className="grid">
@@ -32,13 +21,34 @@ export default function Home() {
 
         <div className="card">
           <h2>Diabetes Prevalence by Income</h2>
-          <div className="placeholder bar">Bar chart will go here</div>
-        </div>
-      </section>
 
-      <section className="card">
-        <h2>Parallel Coordinates Plot</h2>
-        <div className="placeholder pcp">PCP will go here</div>
+          <div className="controls chart-controls">
+            <div className="control">
+              <label>Group by:</label>
+              <select value={groupBy} onChange={(e) => setGroupBy(e.target.value)}>
+                <option value="PhysActivity">Physical Activity</option>
+                <option value="Smoker">Smoking</option>
+                <option value="HighBP">High Blood Pressure</option>
+                <option value="HighChol">High Cholesterol</option>
+                <option value="Sex">Sex</option>
+                <option value="DiffWalk">Difficulty Walking</option>
+                <option value="HeartDiseaseorAttack">Heart Disease or Attack</option>
+              </select>
+            </div>
+
+            <div className="control">
+              <label>Age Filter:</label>
+              <input type="range" min="1" max="13" />
+            </div>
+          </div>
+
+          <GroupedBarChart groupBy={groupBy} />
+        </div>
+
+        <div className="card">
+          <h2>Parallel Coordinates Plot</h2>
+          <div className="placeholder pcp">PCP will go here</div>
+        </div>
       </section>
     </main>
   );
