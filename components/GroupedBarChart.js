@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
-export default function GroupedBarChart({ groupBy }) {
+export default function GroupedBarChart({ groupBy, ageRange }) {
   const svgRef = useRef();
   const [data, setData] = useState([]);
 
@@ -9,10 +9,22 @@ export default function GroupedBarChart({ groupBy }) {
     fetch("/data/prevalence.json")
       .then((res) => res.json())
       .then((json) => {
-        const filtered = json.filter((d) => d.groupBy === groupBy);
+        const filtered = json.filter((d) => {
+          const matchesGroup = d.groupBy === groupBy;
+
+          if (!ageRange || d.age === undefined) {
+            return matchesGroup;
+          }
+
+          const matchesAge =
+            d.age >= ageRange[0] && d.age <= ageRange[1];
+
+          return matchesGroup && matchesAge;
+        });
+
         setData(filtered);
       });
-  }, [groupBy]);
+  }, [groupBy, ageRange]);
 
   useEffect(() => {
     if (!data.length) return;

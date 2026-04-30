@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: auto;
   padding: 30px;
 }
@@ -27,11 +27,29 @@ body {
   background: white;
   padding: 15px;
   border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.chart-controls {
+  background: #f5f6f8;
+  margin-bottom: 15px;
 }
 
 .control {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+}
+
+.control label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.control select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 .grid {
@@ -40,15 +58,52 @@ body {
   gap: 20px;
 }
 
+.dashboard-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
 .card {
   background: white;
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 20px;
+  overflow-x: auto;
 }
 
 .card h2 {
   margin-top: 0;
+}
+
+.full-width-card {
+  margin-top: 4px;
+}
+
+.age-control {
+  min-width: 300px;
+}
+
+.age-sliders {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.age-sliders div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.age-sliders span {
+  font-size: 12px;
+  color: #666;
+}
+
+.age-sliders input {
+  width: 130px;
 }
 
 .placeholder {
@@ -73,4 +128,16 @@ body {
 .pcp {
   height: 350px;
   background: linear-gradient(90deg, #e8f5e9, #a5d6a7);
+}
+
+.full-width-card svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-top {
+    grid-template-columns: 1fr;
+  }
 }

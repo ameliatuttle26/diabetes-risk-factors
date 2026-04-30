@@ -21,8 +21,8 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
 
     const variables = [...new Set(data.map((d) => d.x))];
 
-    const width = 850;
-    const height = 850;
+    const width = 550;
+    const height = 550;
     const margin = { top: 170, right: 40, bottom: 40, left: 170 };
 
     svg.attr("width", width).attr("height", height);

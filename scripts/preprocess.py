@@ -191,7 +191,7 @@ prevalence_data = []
 for group_var in group_variables:
     grouped = (
         df_clean
-        .groupby(["Income", "Income_label", group_var])
+        .groupby(["Income", "Income_label", "Age", "Age_label", group_var])
         .agg(
             total=("Diabetes_012", "count"),
             diabetes_count=("Diabetes_012", lambda x: (x == 2).sum()),
@@ -220,6 +220,8 @@ for group_var in group_variables:
             "groupBy": group_var,
             "income": int(row["Income"]),
             "incomeLabel": row["Income_label"],
+            "age": int(row["Age"]),
+            "ageLabel": row["Age_label"],
             "groupValue": int(value),
             "groupLabel": value_label,
             "total": int(row["total"]),
