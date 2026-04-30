@@ -3,20 +3,60 @@ import * as d3 from "d3";
 
 export default function GroupedBarChart({ groupBy }) {
   const svgRef = useRef();
-  const [data, setData] = useState([]);
+  // age filtering: re-computing prevalence from pcp_sample (when range isn't full)
+  const [prevalenceData, setPrevalenceData] = useState([]);
+  const [pcpData, setPcpData] = useState([]);
 
   useEffect(() => {
     fetch("/data/prevalence.json")
       .then((res) => res.json())
-      .then((json) => {
-        const filtered = json.filter((d) => d.groupBy === groupBy);
-        setData(filtered);
-      });
-  }, [groupBy]);
+      .then(setPrevalenceData);
+  }, []);
 
   useEffect(() => {
-    if (!data.length) return;
+    fetch("/data/pcp_sample.json")
+      .then((res) => res.json())
+      .then(setPcpData);
+  }, []);
 
+  useEffect(() => {
+    if (!prevalenceData.length || !pcpData.length) return;
+
+    // age filtering: when full age range selected, use precomputed prevalence
+    const fullRange = ageRange[0] === 1 && ageRange[1] === 13;
+
+    let data = prevalenceData.filter((d) => d.groupBy === groupBy);
+    
+    // building prevalence lookup from pcp_sample filtered to ageRange
+    if (!fullRange) {
+      const ageSample = pcpData.filter(
+        (r) => r.Age >= ageRange[0] && r.Age <= ageRange[1]
+      );
+      // map groupBy var names to pcp_sample keys (should match?)
+      const grouped = d3.rollup(
+        ageSample, 
+        (rows) => ({
+          total: rows.length, 
+          diabetesCount: rows.filter((r) => r.Diabetes_012 === 2).length, 
+        }),
+        (r) => r.Income, // income 1-8
+        (r) => r[groupBy] // 0 or 1
+      );
+  
+      data = data.map((d) => {
+        const incomeGroup = grouped.get(d.income);
+        if (!incomeGroup) return {...d, diabetesPrevalence: 0};
+        const cell = incomeGroup.get(d.groupValue);
+        if (!cell || cell.total === 0) return {...d, diabetesPrevalence: 0};
+        return {
+          ...d, 
+          diabetesPrevalence: (cell.diabetesCount / cell.total) * 100, 
+        };
+      });
+    }
+
+    // heatmap linking: highlight bar if its var matches selectedVar
+    const isLinked = selectedVariable && selectedVariable === groupBy;
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
@@ -121,14 +161,26 @@ export default function GroupedBarChart({ groupBy }) {
       .attr("height", (d) => height - margin.bottom - y(d.diabetesPrevalence))
       .attr("fill", (d) => color(d.groupLabel));
 
-    // Title
+    // Title: added bold/underline and turns red if this groupBy is heatmap selected var
     svg
       .append("text")
       .attr("x", margin.left)
       .attr("y", 22)
       .attr("font-size", 15)
       .attr("font-weight", "bold")
+      .attr("fill", isLinked ? "#c0392b" : "#222")
       .text(`Diabetes prevalence by income, grouped by ${groupBy}`);
+
+    // age range
+    if (!fullRange) {
+      svg
+        .append("text")
+        .attr("x", margin.left)
+        .attr("y", 40)
+        .attr("font-size", 11)
+        .attr("fill", "#888")
+        .text(`Age group filter: ${ageRange[0]}-${ageRange[1]}`);
+    }
 
     // Legend
     const legend = svg
@@ -161,7 +213,7 @@ export default function GroupedBarChart({ groupBy }) {
         .attr("font-size", 12)
         .text(formatLabel(groupBy, label));
     });
-  }, [data, groupBy]);
+  }, [prevalenceData, pcpData, groupBy, selectedVariable, ageRange]);
 
   return <svg ref={svgRef}></svg>;
 }
