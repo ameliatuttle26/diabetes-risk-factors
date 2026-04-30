@@ -1,10 +1,12 @@
 import { useState } from "react";
 import GroupedBarChart from "../components/GroupedBarChart";
 import Heatmap from "../components/Heatmap";
+import ParallelCoordinates from "../components/ParallelCoordinates";
 
 export default function Home() {
   const [groupBy, setGroupBy] = useState("PhysActivity");
   const [selectedVariable, setSelectedVariable] = useState(null);
+  const [ageRange, setAgeRange] = useState([1, 13]);
 
   return (
     <main className="container">
@@ -42,17 +44,49 @@ export default function Home() {
             </div>
 
             <div className="control">
-              <label>Age Filter:</label>
-              <input type="range" min="1" max="13" />
+              <label>
+                Age Filter: {ageRange[0]} -{ageRange[1]}&nbsp;
+                <span style = {{color: "#888", fontWeight: "normal",  fontSize: 12}}>
+                  (1 = 18-24, 13 = 80+)
+                </span>
+              </label>
+              <div style = {{display: "flex", gap: "8px", alignItems: "center"}}>
+                <span style = {{fontSize: 12, color: "#888"}}>Min</span>
+                <input
+                  type = "range"
+                  min = "1"
+                  max = "13"
+                  value = {ageRange[0]}
+                  onChange = {(e) => {
+                    const val = Number(e.target.value);
+                    setAgeRange(([, max]) => [Math.min(val, max), max]);
+                  }}
+                />
+                <span style = {{fontSize: 12, color: "#888"}}>Max</span>
+                <input
+                  type = "range"
+                  min = "1"
+                  max = "13"
+                  value = {ageRange[1]}
+                  onChange = {(e) => {
+                    const val = Number(e.target.value);
+                    setAgeRange(([min]) => [min, Math.max(val, min)]);
+                  }}
+                />
+              </div>
             </div>
           </div>
 
-          <GroupedBarChart groupBy={groupBy} />
+          <GroupedBarChart groupBy={groupBy}
+            groupBy = {groupBy}
+            selectedVariable = {selectedVariable}
+            ageRange = {ageRange}
+          />
         </div>
 
         <div className="card">
           <h2>Parallel Coordinates Plot</h2>
-          <div className="placeholder pcp">PCP will go here</div>
+          <ParallelCoordinates ageRange = {ageRange} />
         </div>
       </section>
     </main>
