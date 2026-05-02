@@ -217,11 +217,7 @@ export default function GroupedBarChart({ groupBy, selectedVariable, ageRange })
       .attr("font-size", 13)
       .attr("font-weight", "bold")
       .attr("fill", isLinked ? "#c0392b" : "#222")
-      .text(
-        isLinked
-          ? `↳ Linked from heatmap: grouped by ${displayNames[groupBy] ?? groupBy}`
-          : `Diabetes prevalence by income, grouped by ${displayNames[groupBy] ?? groupBy}`
-      );
+      .text(`Diabetes prevalence by income, grouped by ${displayNames[groupBy] ?? groupBy}`);
 
     if (!fullRange) {
       svg.append("text")

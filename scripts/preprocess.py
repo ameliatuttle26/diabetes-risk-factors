@@ -243,7 +243,7 @@ pcp_columns = ['Diabetes_012', 'diabetes_label', 'BMI', 'Income', 'Income_label'
             'Smoker', 'Sex', 'HeartDiseaseorAttack']
 
 
-n_per_class = 1000
+n_per_class = 500
 pcp_sample = (
     df_clean[pcp_columns]
     .groupby("Diabetes_012", group_keys=False)

@@ -256,7 +256,6 @@ body {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
-  overflow-x: auto;
 }
 
 
@@ -310,18 +309,27 @@ body {
   align-items: start;
 }
 
-.dashboard-top .card:first-child svg {
-  max-height: 520px;
-}
-
 /* Bar chart card: relative so toast positions against it, overflow visible so toast escapes */
 .bar-chart-card {
   position: relative;
   overflow: visible;
 }
 
-.full-width-card svg { display: block; max-width: 100%; height: auto }
+/* Scroll wrapper only around the SVG, not the whole card */
+.bar-chart-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
+.full-width-card svg { display: block; max-width: 100%; }
+
+/* Both chart SVGs fill card width responsively */
+.card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* ── Controls ── */
 .controls {
@@ -499,8 +507,16 @@ body {
 .page-footer a { color: var(--accent); text-decoration: none; }
 .page-footer a:hover { text-decoration: underline; }
 
+/* ── PCP drag — suppress all interaction on dragging axis ── */
+.axis.dragging {
+  pointer-events: none;
+}
+.axis.dragging .axis-drag-handle {
+  pointer-events: all;
+}
+
 /* ── Responsive ── */
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .dashboard-top { grid-template-columns: 1fr; }
   .how-to-use { flex-direction: column; }
   .how-to-step { border-right: none; border-bottom: 1px solid var(--border); }

@@ -84,6 +84,8 @@ export default function ParallelCoordinates({ ageRange }) {
     const brushSelections = {};
     dimensions.forEach((dim) => { brushSelections[dim] = null; });
 
+    const hiddenStatuses = new Set();
+
     // ── Tooltip ──
     const tooltip = d3.select("body")
       .append("div")
@@ -157,7 +159,9 @@ export default function ParallelCoordinates({ ageRange }) {
         ? lines.transition().duration(200).ease(d3.easeCubicOut)
         : lines;
       sel
+        .style("pointer-events", (d) => hiddenStatuses.has(d.diabetes_label) ? "none" : "auto")
         .attr("opacity", (d) => {
+          if (hiddenStatuses.has(d.diabetes_label)) return 0;
           if (activeBrushes.length === 0) return baseOpacity[d.diabetes_label] ?? 0.25;
           const passes = activeBrushes.every(([dim, [lo, hi]]) => {
             const val = y[dim](Number(d[dim]));
@@ -194,7 +198,7 @@ export default function ParallelCoordinates({ ageRange }) {
           if (dim === "Age") return ageLabels[Math.round(val)] || val;
           if (dim === "Income") return incomeLabels[Math.round(val)] || val;
           if (dim === "GenHlth") return genHlthLabels[Math.round(val)] || val;
-          if (dim === "HighBP") return Math.round(val) === 1 ? "Yes" : "No";
+          if (dim === "HighBP") return val === 1 ? "Yes" : val === 0 ? "No" : "";
           return val;
         })
       );
@@ -223,17 +227,14 @@ export default function ParallelCoordinates({ ageRange }) {
           dragging[dim] = x(dim);
           label.attr("fill", "#c1513f");
           axisG.select(".axis-drag-handle").attr("cursor", "grabbing");
-          // Raise once here — never again during drag to avoid repaint flicker
+          // Use a class to suppress pointer events — avoids per-node style recalc
+          axisG.classed("dragging", true);
           d3.select(axisG.node()).raise();
-          // Suppress pointer events on all axis text so browser stops re-hitting text nodes
-          axisG.selectAll("text").style("pointer-events", "none");
         })
         .on("drag", function (event) {
           dragging[dim] = Math.max(margin.left, Math.min(width - margin.right, event.x));
           // Move axis group immediately — this is just a CSS transform, very cheap
           axisG.attr("transform", `translate(${dragging[dim]},0)`);
-          // Update domain live so snap-to on end knows the correct order
-          x.domain([...dimensions].sort((a, b) => position(a) - position(b)));
           // Throttle line redraws to one per animation frame
           if (!rafPending) {
             rafPending = true;
@@ -244,16 +245,19 @@ export default function ParallelCoordinates({ ageRange }) {
           }
         })
         .on("end", function () {
+          // Capture final order BEFORE deleting dragging, while pixel position still known
+          const finalOrder = [...dimensions].sort((a, b) => position(a) - position(b));
+
           delete dragging[dim];
           axisG.select(".axis-drag-handle").attr("cursor", "grab");
-          // Restore pointer events on text
-          axisG.selectAll("text").style("pointer-events", null);
+          axisG.classed("dragging", false);
 
           // Commit new order
-          dimensions.sort((a, b) => x(a) - x(b));
+          dimensions.length = 0;
+          finalOrder.forEach(d => dimensions.push(d));
           x.domain(dimensions);
 
-          // Reset all label colors (brush state is unchanged)
+          // Reset all label colors
           dimensions.forEach((d) => {
             labels[d].attr("fill", brushSelections[d] ? "#c1513f" : "#1c1917");
           });
@@ -340,14 +344,45 @@ export default function ParallelCoordinates({ ageRange }) {
       .text("Diabetes Status");
 
     statuses.forEach((status, i) => {
-      const row = legend.append("g").attr("transform", `translate(0,${i * 26})`);
+      const row = legend.append("g")
+        .attr("transform", `translate(0,${i * 26})`)
+        .attr("cursor", "pointer")
+        .on("click", function () {
+          if (hiddenStatuses.has(status)) {
+            hiddenStatuses.delete(status);
+          } else {
+            hiddenStatuses.add(status);
+          }
+          const isHidden = hiddenStatuses.has(status);
+          row.select(".legend-line").attr("stroke", isHidden ? "#cdc5bb" : color(status));
+          row.select(".legend-label")
+            .attr("fill", isHidden ? "#a8a09a" : "#1c1917")
+            .attr("text-decoration", isHidden ? "line-through" : "none");
+          row.select(".legend-dot")
+            .text(isHidden ? "○" : "●")
+            .attr("fill", isHidden ? "#cdc5bb" : color(status));
+          updateLineVisibility();
+        });
+
+      row.append("text")
+        .attr("class", "legend-dot")
+        .attr("x", -10).attr("y", 10)
+        .attr("font-size", 9).attr("text-anchor", "middle")
+        .attr("fill", color(status))
+        .text("●");
+
       row.append("line")
+        .attr("class", "legend-line")
         .attr("x1", 0).attr("y1", 6).attr("x2", 22).attr("y2", 6)
         .attr("stroke", color(status)).attr("stroke-width", 3);
+
       row.append("text")
+        .attr("class", "legend-label")
         .attr("x", 28).attr("y", 10)
         .attr("font-size", 11).attr("fill", "#1c1917")
         .text(status);
+
+      row.append("title").text("Click to show/hide");
     });
 
     // Single reorder hint centered below the chart
