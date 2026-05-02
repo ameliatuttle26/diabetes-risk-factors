@@ -237,26 +237,17 @@ with open(OUTPUT_DIR / "prevalence.json", "w") as f:
 
 # 3. Parallel Coordinates Sample JSON
 
-pcp_columns = [
-    "Diabetes_012",
-    "diabetes_label",
-    "BMI",
-    "Income",
-    "Income_label",
-    "Age",
-    "Age_label",
-    "HighBP",
-    "HighChol",
-    "PhysActivity",
-    "GenHlth",
-    "MentHlth",
-    "PhysHlth",
-    "DiffWalk"
-]
+pcp_columns = ['Diabetes_012', 'diabetes_label', 'BMI', 'Income', 'Income_label',
+            'Age', 'Age_label', 'HighBP', 'HighChol', 'PhysActivity',
+            'GenHlth', 'MentHlth', 'PhysHlth', 'DiffWalk',
+            'Smoker', 'Sex', 'HeartDiseaseorAttack']
 
+
+n_per_class = 1000
 pcp_sample = (
     df_clean[pcp_columns]
-    .sample(n=1500, random_state=42)
+    .groupby("Diabetes_012", group_keys=False)
+    .apply(lambda x: x.sample(min(len(x), n_per_class), random_state=42))
     .to_dict(orient="records")
 )
 
