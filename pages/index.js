@@ -94,7 +94,7 @@ export default function Home() {
             <h2>Which factors correlate most with diabetes?</h2>
             <p>
               The heatmap shows pairwise correlations across all health variables.
-              <strong> Click any cell</strong> to automatically group the bar chart by that variable.
+              <strong> Click applicable cells</strong> to automatically group the bar chart by that variable.
             </p>
           </div>
         </div>
@@ -207,8 +207,8 @@ export default function Home() {
             <h2>How do multiple risk factors combine?</h2>
             <p>
               Each line is one survey respondent, colored by diabetes status.
-              <strong> Drag on any axis</strong> to brush and isolate subpopulations —
-              for example, high-BMI, low-income individuals. The age filter above applies here too.
+              Explore how combinations of risk factors cluster across diabetes groups —
+              for example, isolating high-BMI, low-income individuals. The age filter above applies here too.
             </p>
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function Home() {
         <div className="card full-width-card">
           <div className="card-header">
             <h2>Parallel Coordinates Explorer</h2>
-            <span className="card-hint">Drag on any axis to filter · Click axis label to reset that axis</span>
+            <span className="card-hint">Drag ·· handles to reorder axes · Click legend to filter by class</span>
           </div>
           {isFiltered && (
             <div className="filter-badge">

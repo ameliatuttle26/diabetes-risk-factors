@@ -172,8 +172,8 @@ export default function GroupedBarChart({ groupBy, selectedVariable, ageRange })
           .html(`
             <div style="font-weight:700;margin-bottom:4px">${d.incomeLabel}</div>
             <div>${formatLabel(groupBy, d.groupLabel)}</div>
-            <div>Prevalence: <strong>${d.diabetesPrevalence.toFixed(1)}%</strong></div>
-            <div style="color:#888;font-size:10px">n = ${d.total?.toLocaleString() ?? "—"}</div>
+            <div>Diabetes Prevalence: <strong>${d.diabetesPrevalence.toFixed(1)}%</strong></div>
+            <div style="color:#888;font-size:10px"> Number of Respondents = ${d.total?.toLocaleString() ?? "—"}</div>
           `)
           .style("left", event.pageX + 14 + "px")
           .style("top", event.pageY - 40 + "px");
