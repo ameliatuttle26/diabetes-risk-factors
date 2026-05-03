@@ -19,7 +19,7 @@ export default function ParallelCoordinates({ ageRange }) {
     d3.select("body").selectAll(".pcp-tooltip").remove();
 
     // Mutable — order changes when user drags
-    let dimensions = ["BMI", "Age", "Income", "GenHlth", "PhysHlth", "HighBP"];
+    let dimensions = ["GenHlth", "BMI", "Age", "Income", "Education", "PhysHlth"];
 
     const ageLabels = {
       1:"18–24",2:"25–29",3:"30–34",4:"35–39",5:"40–44",6:"45–49",
@@ -115,7 +115,7 @@ export default function ParallelCoordinates({ ageRange }) {
     );
 
     // Base opacity per class — rarer classes slightly more prominent
-    const baseOpacity = { "No Diabetes": 0.25, "Diabetes": 0.25, "Prediabetes": 0.25 };
+    const baseOpacity = { "No Diabetes": 0.4, "Diabetes": 0.4, "Prediabetes": 0.4 };
 
     const lines = linesGroup.selectAll(".pcp-line")
       .data(sortedData)
@@ -135,12 +135,12 @@ export default function ParallelCoordinates({ ageRange }) {
           .style("opacity", 1)
           .html(`
             <div style="font-weight:700;color:${color(d.diabetes_label)};margin-bottom:4px">${d.diabetes_label}</div>
+            <div>General Health: <strong>${genHlthLabels[d.GenHlth] ?? d.GenHlth}</strong></div>
             <div>BMI: <strong>${d.BMI}</strong></div>
             <div>Age: <strong>${ageLabels[d.Age] ?? d.Age}</strong></div>
             <div>Income: <strong>${incomeLabels[d.Income] ?? d.Income}</strong></div>
-            <div>General Health: <strong>${genHlthLabels[d.GenHlth] ?? d.GenHlth}</strong></div>
-            <div>Physical Unhealthy Days: <strong>${d.PhysHlth}</strong></div>
-            <div>High Blood Pressure: <strong>${d.HighBP === 1 ? "Yes" : "No"}</strong></div>
+            <div>Education Level: <strong>${["", "No school", "Elementary", "Some HS", "HS Grad", "Some College", "College Grad"][d.Education] ?? d.Education}</strong></div>
+            <div>Physical Health Days: <strong>${d.PhysHlth}</strong></div>
           `)
           .style("left", event.pageX + 14 + "px")
           .style("top", event.pageY - 60 + "px");
@@ -198,7 +198,7 @@ export default function ParallelCoordinates({ ageRange }) {
           if (dim === "Age") return ageLabels[Math.round(val)] || val;
           if (dim === "Income") return incomeLabels[Math.round(val)] || val;
           if (dim === "GenHlth") return genHlthLabels[Math.round(val)] || val;
-          if (dim === "HighBP") return val === 1 ? "Yes" : val === 0 ? "No" : "";
+          if (dim === "Education") return ["", "No school", "Elementary", "Some HS", "HS Grad", "Some College", "College Grad"][Math.round(val)] || val;
           return val;
         })
       );
@@ -213,7 +213,14 @@ export default function ParallelCoordinates({ ageRange }) {
         .attr("font-weight", "bold")
         .attr("fill", "#1c1917")
         .attr("cursor", "default")
-        .text(dim);
+        .text({
+        GenHlth: "General Health",
+        BMI: "BMI",
+        Age: "Age",
+        Income: "Income",
+        Education: "Education",
+        PhysHlth: "Physical Health Days",
+      }[dim] ?? dim);
 
       labels[dim] = label;
 
@@ -236,6 +243,7 @@ export default function ParallelCoordinates({ ageRange }) {
           // Move axis group immediately — this is just a CSS transform, very cheap
           axisG.attr("transform", `translate(${dragging[dim]},0)`);
           // Throttle line redraws to one per animation frame
+          // x.domain([...dimensions].sort((a, b) => position(a) - position(b)));
           if (!rafPending) {
             rafPending = true;
             requestAnimationFrame(() => {
@@ -336,7 +344,7 @@ export default function ParallelCoordinates({ ageRange }) {
 
     // ── Legend ──
     const legend = svg.append("g")
-      .attr("transform", `translate(${width - margin.right + 40},${margin.top})`)
+      .attr("transform", `translate(${width - margin.right + 50},${margin.top+40})`)
 
     legend.append("text")
       .attr("x", 0).attr("y", -14)

@@ -238,9 +238,9 @@ with open(OUTPUT_DIR / "prevalence.json", "w") as f:
 # 3. Parallel Coordinates Sample JSON
 
 pcp_columns = ['Diabetes_012', 'diabetes_label', 'BMI', 'Income', 'Income_label',
-            'Age', 'Age_label', 'HighBP', 'HighChol', 'PhysActivity',
-            'GenHlth', 'MentHlth', 'PhysHlth', 'DiffWalk',
-            'Smoker', 'Sex', 'HeartDiseaseorAttack']
+        'Age', 'Age_label', 'HighBP', 'HighChol', 'PhysActivity',
+        'GenHlth', 'MentHlth', 'PhysHlth', 'DiffWalk',
+        'Smoker', 'Sex', 'HeartDiseaseorAttack', 'Education'] 
 
 
 n_per_class = 500
