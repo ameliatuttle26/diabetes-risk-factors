@@ -31,14 +31,6 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
 
     const color = d3.scaleSequential().domain([0, 1]).interpolator(d3.interpolateYlOrRd);
 
-    // ── Subtitle ──
-    svg.append("text")
-      .attr("x", margin.left)
-      .attr("y", margin.top - 115)
-      .attr("font-size", 11)
-      .attr("fill", "#6b6560")
-      .text("Click any cell to link bar chart → that variable");
-
     // ── Selected variable highlight bands ──
     if (selectedVariable) {
       // Column band
@@ -192,8 +184,8 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
 
     // ── Color legend ──
     const legendW = 120, legendH = 10;
-    const legendX = width - margin.right - legendW;
-    const legendY = 30;
+    const legendX = margin.left;
+    const legendY = height - 20;  
 
     const defs = svg.append("defs");
     const grad = defs.append("linearGradient").attr("id", "heatmap-legend-grad");

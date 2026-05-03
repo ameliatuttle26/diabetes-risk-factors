@@ -66,17 +66,17 @@ export default function Home() {
         <div className="hero-eyebrow">CDC BRFSS 2015 · 253,680 Respondents</div>
         <h1>Understanding <em>Diabetes Risk</em><br />Across America</h1>
         <p className="hero-desc">
-          Diabetes affects 40 million Americans. This interactive dashboard
-          explores how lifestyle, physiology, and income shape diabetes risk —
-          and which combinations of factors matter most.
+          In 2015, 30.3 million Americans had diabetes, a number that has since grown to 40 million by 2026.
+          This interactive dashboard explores the CDC BRFSS 2015 data to understand how lifestyle, physiology,
+          and income shape diabetes risk, and which combinations of factors matter most.
         </p>
         <div className="hero-stats">
           <div className="hero-stat">
-            <strong>40M</strong>
+            <strong>30.3M</strong>
             <span>Americans with diabetes</span>
           </div>
           <div className="hero-stat">
-            <strong>~15%</strong>
+            <strong>~24%</strong>
             <span>Prevalence in lowest-income group</span>
           </div>
           <div className="hero-stat">
@@ -85,28 +85,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      {/* ── How to use ── */}
-      <div className="how-to-use">
-        <div className="how-to-step">
-          <div className="step-num">1</div>
-          <div>
-            <strong>Click any cell</strong> in the heatmap to see how that variable relates to diabetes prevalence in the bar chart.
-          </div>
-        </div>
-        <div className="how-to-step">
-          <div className="step-num">2</div>
-          <div>
-            <strong>Adjust the age slider</strong> to filter both charts to a specific age group.
-          </div>
-        </div>
-        <div className="how-to-step">
-          <div className="step-num">3</div>
-          <div>
-            <strong>Brush an axis</strong> in the parallel coordinates plot to isolate specific subpopulations.
-          </div>
-        </div>
-      </div>
 
       {/* ── Section 1: Heatmap + Bar Chart ── */}
       <section className="narrative-section">
@@ -124,7 +102,7 @@ export default function Home() {
         <div className="charts-area">
           <div className="dashboard-top">
           {/* Heatmap */}
-          <div className="card">
+          <div className="card heatmap-card">
             <div className="card-header">
               <h2>Correlation Heatmap</h2>
               <span className="card-hint">Click a cell → updates bar chart</span>

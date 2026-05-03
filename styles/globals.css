@@ -507,6 +507,10 @@ body {
 .page-footer a { color: var(--accent); text-decoration: none; }
 .page-footer a:hover { text-decoration: underline; }
 
+.heatmap-card svg {
+  margin-top: -75px;
+}
+
 /* ── PCP drag — suppress all interaction on dragging axis ── */
 .axis.dragging {
   pointer-events: none;
