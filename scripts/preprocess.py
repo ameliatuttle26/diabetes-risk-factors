@@ -136,6 +136,7 @@ correlations = []
 
 for col in feature_columns:
     corr = df_clean[col].corr(df_clean["Diabetes_012"])
+    #corr = df_clean[col].corr(df_clean["Diabetes_012"], method="spearman")
     correlations.append({
         "variable": col,
         "correlation": round(float(corr), 4),
@@ -156,6 +157,7 @@ with open(OUTPUT_DIR / "correlations.json", "w") as f:
 # 1B. Correlation Matrix JSON
 
 corr_matrix = df_clean[feature_columns + ["Diabetes_012"]].corr()
+#corr_matrix = df_clean[feature_columns + ["Diabetes_012"]].corr(method="spearman")
 
 matrix_data = []
 

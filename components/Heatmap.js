@@ -14,6 +14,34 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
   useEffect(() => {
     if (!data.length) return;
 
+    const groupableVariables = [
+      "PhysActivity", "Smoker", "HighBP", "HighChol",
+      "Sex", "DiffWalk", "HeartDiseaseorAttack"
+      ];
+
+    const displayNames = {
+      HighBP: "High Blood Pressure",
+      HighChol: "High Cholesterol",
+      BMI: "BMI",
+      Smoker: "Smoker",
+      Stroke: "Stroke",
+      HeartDiseaseorAttack: "Heart Disease",
+      PhysActivity: "Physical Activity",
+      Fruits: "Fruits",
+      Veggies: "Vegetables",
+      HvyAlcoholConsump: "Heavy Alcohol Use",
+      AnyHealthcare: "Has Healthcare",
+      NoDocbcCost: "No Doctor (Due to Cost)",
+      GenHlth: "General Health",
+      MentHlth: "Mental Health Days",
+      PhysHlth: "Physical Health Days",
+      DiffWalk: "Difficulty Walking",
+      Sex: "Sex",
+      Age: "Age",
+      Education: "Education",
+      Income: "Income",
+      Diabetes_012: "Diabetes Status",
+    };
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
     d3.select("body").selectAll(".heatmap-tooltip").remove();
@@ -114,7 +142,7 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
       .attr("fill", "transparent")
-      .attr("cursor", "pointer")
+      .attr("cursor", (d) => groupableVariables.includes(d.x) ? "pointer" : "default")
       .on("mouseover", function (event, d) {
         hoverRect
           .attr("x", x(d.x) - 3)
@@ -127,10 +155,10 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
         tooltip
           .style("opacity", 1)
           .html(`
-            <div style="font-weight:700;margin-bottom:4px">${d.x} × ${d.y}</div>
+            <div style="font-weight:700;margin-bottom:4px">${displayNames[d.x] ?? d.x} × ${displayNames[d.y] ?? d.y}</div>
             <div>Correlation: <strong>${d.value.toFixed(3)}</strong></div>
             <div style="color:#888;font-size:11px">${strengthLabel} association</div>
-            ${d.x !== d.y ? '<div style="color:#c0392b;font-size:11px;margin-top:4px">Click to link bar chart →</div>' : ""}
+            ${groupableVariables.includes(d.x) ? '<div style="color:#c0392b;font-size:11px;margin-top:4px">Click to group bar chart by this variable</div>' : d.x !== d.y ? '<div style="color:#a8a09a;font-size:11px;margin-top:4px">Not available as a bar chart grouping</div>' : ""}
           `)
           .style("left", event.pageX + 14 + "px")
           .style("top", event.pageY - 28 + "px");
@@ -145,9 +173,9 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
         tooltip.style("opacity", 0);
       })
       .on("click", function (event, d) {
-        if (onSelectVariable && d.x !== d.y) {
+        if (onSelectVariable && groupableVariables.includes(d.x)) {
           onSelectVariable(d.x);
-        }
+        } 
       });
 
     // ── X labels ──
@@ -166,7 +194,7 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .attr("font-size", 10)
       .attr("font-weight", (d) => d === selectedVariable ? "bold" : "normal")
       .attr("fill", (d) => d === selectedVariable ? "#c0392b" : "#333")
-      .text((d) => d);
+      .text((d) => displayNames[d] ?? d);
 
     // ── Y labels ──
     svg.append("g").selectAll(".y-label")
@@ -180,7 +208,7 @@ export default function Heatmap({ selectedVariable, onSelectVariable }) {
       .attr("font-size", 10)
       .attr("font-weight", (d) => d === selectedVariable ? "bold" : "normal")
       .attr("fill", (d) => d === selectedVariable ? "#c0392b" : "#333")
-      .text((d) => d);
+      .text((d) => displayNames[d] ?? d);
 
     // ── Color legend ──
     const legendW = 120, legendH = 10;
