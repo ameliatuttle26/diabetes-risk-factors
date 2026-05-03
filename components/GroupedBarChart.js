@@ -68,8 +68,7 @@ export default function GroupedBarChart({ groupBy, selectedVariable, ageRange })
     const x0 = d3.scaleBand().domain(incomeLabels).range([margin.left, width - margin.right]).padding(0.25);
     const x1 = d3.scaleBand().domain(groupLabels).range([0, x0.bandwidth()]).padding(0.08);
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, (d) => d.diabetesPrevalence) * 1.18 || 1])
-      .nice()
+      .domain([0, 100])
       .range([height - margin.bottom, margin.top]);
 
     const color = d3.scaleOrdinal()
