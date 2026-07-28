@@ -240,11 +240,11 @@ export default function Home() {
 
         <div className="card full-width-card takeaway-card">
           <p className="takeaway-text">
-            Income, high blood pressure, and physical inactivity compound: respondents in the lowest income
+            Income, high blood pressure, and physical inactivity compound. Respondents in the lowest income
             bracket who are also physically inactive show diabetes prevalence roughly three times higher than
-            higher-income, active respondents. No single factor here is a strong predictor on its own — it's
+            higher-income, active respondents. No single factor here is a strong predictor on its own. It's
             the combination that matters, which is exactly what the parallel coordinates view above is built
-            to surface.
+            to show.
           </p>
           <p className="takeaway-text">
             <strong>What this would support:</strong> a screening or outreach program with limited budget would
