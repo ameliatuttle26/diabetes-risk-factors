@@ -1,6 +1,6 @@
 # Diabetes Risk Factors
 
-Interactive information visualization project by Amelia Tuttle and Zoey Zhang.
+Interactive information visualization project by Amelia Tuttle.
 
 This project explores diabetes risk factors using the CDC BRFSS 2015 Diabetes Health Indicators dataset. The visualization includes a correlation heatmap, linked grouped bar chart, age filtering, dropdown-based subgroup comparison, and a parallel coordinates plot.
 
