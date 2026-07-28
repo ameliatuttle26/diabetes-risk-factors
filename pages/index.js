@@ -66,14 +66,15 @@ export default function Home() {
         <div className="hero-eyebrow">CDC BRFSS 2015 · 253,680 Respondents</div>
         <h1>Understanding <em>Diabetes Risk</em><br />Across America</h1>
         <p className="hero-desc">
-          In 2015, 30.3 million Americans had diabetes, a number that has since grown to 40 million by 2026.
-          This interactive dashboard explores the CDC BRFSS 2015 data to understand how lifestyle, physiology,
-          and income shape diabetes risk, and which combinations of factors matter most.
+          In 2015, 30.3 million Americans had diabetes. By 2023, that figure had risen to 40.1 million,
+          or 12% of the population (CDC National Diabetes Statistics Report, 2026). This dashboard asks a
+          specific question: which combination of risk factors most reliably predicts diabetes, and what
+          would that mean for who a screening or prevention program should prioritize first?
         </p>
         <div className="hero-stats">
           <div className="hero-stat">
-            <strong>30.3M</strong>
-            <span>Americans with diabetes</span>
+            <strong>40.1M</strong>
+            <span>Americans with diabetes (2023, CDC)</span>
           </div>
           <div className="hero-stat">
             <strong>~24%</strong>
@@ -227,9 +228,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Section 3: Takeaway ── */}
+      <section className="narrative-section">
+        <div className="section-header">
+          <div className="section-number">3</div>
+          <div className="section-header-text">
+            <h2>What this means</h2>
+            <p>The finding, and what it would support if this were an actual screening program.</p>
+          </div>
+        </div>
+
+        <div className="card full-width-card takeaway-card">
+          <p className="takeaway-text">
+            Income, high blood pressure, and physical inactivity compound: respondents in the lowest income
+            bracket who are also physically inactive show diabetes prevalence roughly three times higher than
+            higher-income, active respondents. No single factor here is a strong predictor on its own — it's
+            the combination that matters, which is exactly what the parallel coordinates view above is built
+            to surface.
+          </p>
+          <p className="takeaway-text">
+            <strong>What this would support:</strong> a screening or outreach program with limited budget would
+            get more value targeting low-income, physically inactive populations specifically, rather than
+            running a single generic risk factor (like BMI alone) as the screening criterion.
+          </p>
+        </div>
+      </section>
+
       <footer className="page-footer">
         <p>Data: CDC Behavioral Risk Factor Surveillance System (BRFSS) 2015 · <a href="https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset" target="_blank" rel="noreferrer">Kaggle Dataset</a></p>
-        <p>Amelia Tuttle &amp; Zoey Zhang · NYU Shanghai Information Visualization - Spring 2026</p>
+        <p>Current prevalence figure: CDC National Diabetes Statistics Report, January 2026 (2023 data) · <a href="https://www.cdc.gov/diabetes/php/data-research/index.html" target="_blank" rel="noreferrer">cdc.gov</a></p>
+        <p>Amelia Tuttle · NYU Shanghai Information Visualization - Spring 2026</p>
       </footer>
     </main>
   );
